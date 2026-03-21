@@ -1,43 +1,35 @@
 package com.Taskmanager.Task;
 
-
 import org.springframework.web.bind.annotation.*;
-
-
 import java.util.List;
-@CrossOrigin(origins = "http://localhost:3000")
+
 @RestController
-@RequestMapping("/api/todos")
+@RequestMapping("/api/tasks")
 public class TaskController {
 
-    private final TaskRepo repo; 
+    private final TaskService service;
 
-    public TaskController(TaskRepo repo) {
-        this.repo = repo;
+    public TaskController(TaskService service) {
+        this.service = service;
     }
-  
 
     @GetMapping
     public List<Task> getAll() {
-        return repo.findAll();
+        return service.getAll();
     }
 
     @PostMapping
-    public List<Task> saveAll(@RequestBody List<Task> todos) {
-        System.out.println("POST /api/todos HIT → Saving: " + todos.size());
-        return repo.saveAll(todos);
+    public Task create(@RequestBody Task task) {
+        return service.create(task);
     }
 
-
     @PutMapping("/{id}")
-    public Task update(@PathVariable String id, @RequestBody Task todo) {
-        Task existing = repo.findById(id).orElseThrow();
-        existing.setText(todo.getText());
-        return repo.save(existing);
+    public Task update(@PathVariable String id, @RequestBody Task task) {
+        return service.update(id, task);
     }
 
     @DeleteMapping("/{id}")
     public void delete(@PathVariable String id) {
-        repo.deleteById(id);
+        service.delete(id);
     }
 }
